@@ -92,12 +92,12 @@ int main(int argc, char * argv[])
         MPI_Comm_size(MPI_COMM_WORLD, &totalnodes);
         MPI_Comm_rank(MPI_COMM_WORLD, &node_number);
         /* Initialise spacePartitionType */
-        MPI_Address(&tmp_space_partition, &baseaddress);
-        MPI_Address(&tmp_space_partition.node_id, &array_of_displacements[0]);
+        MPI_Get_address(&tmp_space_partition, &baseaddress);
+        MPI_Get_address(&tmp_space_partition.node_id, &array_of_displacements[0]);
         array_of_displacements[0] -= baseaddress;
-        MPI_Address(&tmp_space_partition.partition_data[0], &array_of_displacements[1]);
+        MPI_Get_address(&tmp_space_partition.partition_data[0], &array_of_displacements[1]);
         array_of_displacements[1] -= baseaddress;
-        MPI_Type_struct(2, array_of_block_lengths, array_of_displacements, array_of_types, &spacePartitionType);
+        MPI_Type_create_struct(2, array_of_block_lengths, array_of_displacements, array_of_types, &spacePartitionType);
         MPI_Type_commit(&spacePartitionType);
     <?end if?>
 
