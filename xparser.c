@@ -269,6 +269,11 @@ int main(int argc, char * argv[])
     }
 
     strcpy(filename, directory);
+    strcat(filename, "CMakeLists.txt");
+    strcpy(tmpl_name, tmpl_directory);
+    strcat(tmpl_name, "CMakeLists.tmpl");
+    parseTemplate(filename, tmpl_name, modeldata);
+    strcpy(filename, directory);
     strcat(filename, "Makefile");
     strcpy(tmpl_name, tmpl_directory);
     strcat(tmpl_name, "Makefile.tmpl");

@@ -1,0 +1,129 @@
+cmake_minimum_required(VERSION 3.21)
+
+project(FLAME_Model C)
+
+# ========================================
+# User-configurable options (like template flags)
+# ========================================
+<?if parallel?>
+option(ENABLE_PARALLEL "Use MPI parallel build" ON)
+<?end if?>
+<?if debug?>
+option(ENABLE_DEBUG "Debug build" ON)
+<?end if?>
+<?if gsl_lib?>
+option(ENABLE_GSL "Use GSL library" ON)
+<?end if?>
+
+# ========================================
+# Paths (equivalent to LIBMBOARD_DIR)
+# ========================================
+find_package(libmboard REQUIRED)
+#set(LIBMBOARD_DIR "/usr/local" CACHE PATH "Path to libmboard")
+
+#set(LIBMBOARD_INC ${LIBMBOARD_DIR}/include)
+#set(LIBMBOARD_LIB ${LIBMBOARD_DIR}/lib)
+
+# ========================================
+# Compiler selection
+# ========================================
+if(ENABLE_PARALLEL)
+    find_package(MPI REQUIRED)
+#    set(CMAKE_C_COMPILER ${MPI_C_COMPILER})
+endif()
+
+# ========================================
+# Compile flags
+# ========================================
+add_compile_options(-std=c99)
+
+#include_directories(
+#    ${LIBMBOARD_INC}
+#)
+
+# Defines
+if(ENABLE_GSL)
+    add_compile_definitions(GSL_LIB)
+endif()
+
+if(ENABLE_DEBUG)
+    add_compile_definitions(_DEBUG_MODE)
+    add_compile_options(-Wall -g)
+else()
+    add_compile_options(-O3)
+endif()
+
+# ========================================
+# FLAME core sources
+# ========================================
+set(FLAME
+    main.c
+    memory.c
+    xml.c
+    messageboards.c
+    partitioning.c
+    rules.c
+    timing.c
+)
+
+# ========================================
+# Generated model sources (template injection)
+# Replace these with your generator output
+# ========================================
+set(SOURCES
+  <?foreach functionfiles?> $filepath <?end foreach?>
+)
+
+# ========================================
+# Executable
+# ========================================
+add_executable(main
+    ${FLAME}
+    ${SOURCES}
+)
+
+# ========================================
+# Linking
+# ========================================
+#link_directories(${LIBMBOARD_LIB})
+
+# libmboard selection logic
+if(ENABLE_PARALLEL)
+    set(MBOARD_LIB libmboard::mboard_p)
+else()
+    set(MBOARD_LIB libmboard::mboard_s)
+endif()
+
+# GSL
+if(ENABLE_GSL)
+    find_package(GSL REQUIRED)
+    target_link_libraries(main GSL::gsl GSL::gslcblas)
+endif()
+
+# Final linking
+target_link_libraries(main
+    ${MBOARD_LIB}
+    m
+)
+
+# MPI link if parallel
+if(ENABLE_PARALLEL)
+    target_link_libraries(main MPI::MPI_C)
+endif()
+
+# ========================================
+# Extra targets (from Makefile)
+# ========================================
+
+add_custom_target(clean-all
+    COMMAND ${CMAKE_COMMAND} -E rm -f main main.exe *.o
+)
+
+add_custom_target(format
+    COMMAND astyle -A3 ${SOURCES}
+)
+
+add_custom_target(print
+    COMMAND a2ps -R -f10 --column=1 ${SOURCES}
+)
+
