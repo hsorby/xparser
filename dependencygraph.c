@@ -48,6 +48,11 @@ void output_latex(char * filename, char * filepath, model_data * modeldata)
     /* open the file to write to */
     file = fopen(buffer, "w");
 
+    if(file == NULL) {
+        printf("Error opening file %s for writing.\n", buffer);
+        return;
+    }
+
     fputs("\\documentclass[a4paper,11pt]{article}\n", file);
     fputs("\\usepackage[table]{xcolor}\n", file);
     fputs("\\usepackage{amsfonts}\n", file);
@@ -97,7 +102,7 @@ void output_latex(char * filename, char * filepath, model_data * modeldata)
     fputs(modeldata->name, file);
     fputs(" FLAME Implementation}\n", file);
 
-    current_xmachine = * modeldata->p_xmachines;
+    // current_xmachine = * modeldata->p_xmachines;
     for(current_xmachine = * modeldata->p_xmachines; current_xmachine != NULL; current_xmachine = current_xmachine->next) {
         //fputs("\n\n\\clearpage", file);
 
@@ -436,6 +441,11 @@ void output_dgraph(char * filename, char * filepath, model_data * modeldata)
     /* open the file to write to */
     file = fopen(buffer, "w");
 
+    if(file == NULL) {
+        printf("Error opening file %s for writing.\n", buffer);
+        return;
+    }
+
     fputs("digraph dependency_graph {\n", file);
     fputs("\trankdir=BT;\n", file);
     fputs("\tsize=\"8,5;\"\n", file); /* cg 9/8/07 - bug - ; missing */
@@ -554,6 +564,11 @@ void output_stategraph(char * filename, char * filepath, model_data * modeldata,
     printf("Writing file : %s\n", buffer);
     /* open the file to write to */
     file = fopen(buffer, "w");
+
+    if(file == NULL) {
+        printf("Error opening file %s for writing.\n", buffer);
+        return;
+    }
 
     fputs("digraph state_graph {\n", file);
     fputs("\trankdir=TB;\n", file);
@@ -1033,6 +1048,11 @@ void output_communication_graph(char * filename, char * filepath, model_data * m
     /* open the file to write to */
     file = fopen(buffer, "w");
 
+    if(file == NULL) {
+        printf("Error opening file %s for writing.\n", buffer);
+        return;
+    }
+
     fputs("/* circo -Tps communication_graph.dot -o communication_graph.ps */\n", file);
     fputs("graph communication_graph {\n", file);
     fputs("\trankdir=BT;\n", file);
@@ -1139,6 +1159,11 @@ void output_process_order_graph(char * filename, char * filepath, model_data * m
     printf("Writing file : %s\n", buffer);
     /* open the file to write to */
     file = fopen(buffer, "w");
+
+    if(file == NULL) {
+        printf("Error opening file %s for writing.\n", buffer);
+        return;
+    }
 
     fputs("digraph communication_graph {\n", file);
     fputs("\trankdir=BT;\n", file);
@@ -1514,6 +1539,11 @@ void output_stategraph_colour(char * filename, char * filepath, model_data * mod
     printf("Writing file : %s\n", buffer);
     /* open the file to write to */
     file = fopen(buffer, "w");
+
+    if(file == NULL) {
+        printf("Error opening file %s for writing.\n", buffer);
+        return;
+    }
 
     fputs("digraph state_graph {\n", file);
     fputs("\trankdir=TB;\n", file);
@@ -3543,7 +3573,7 @@ int create_dependency_graph(char * filepath, model_data * modeldata)
     /* Look for internal dependencies */
     catalogue_agent_internal(modeldata);
 
-    rc = check_message_consistancy(modeldata);
+    // rc = check_message_consistancy(modeldata);
     //if(rc != 0) return -1;
 
     /* check loops in dependencies */
