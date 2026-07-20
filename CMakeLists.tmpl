@@ -77,8 +77,6 @@ add_executable(main
 # ========================================
 # Linking
 # ========================================
-#link_directories(${LIBMBOARD_LIB})
-
 # libmboard selection logic
 if(ENABLE_PARALLEL)
     set(MBOARD_LIB libmboard::mboard_p)
