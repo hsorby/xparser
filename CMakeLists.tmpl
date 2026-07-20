@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(FLAME_Model C)
+project(FLAME_HPC_Model C)
 
 # ========================================
-# User-configurable options (like template flags)
+# User-configurable options (via template)
 # ========================================
 <?if parallel?>
 option(ENABLE_PARALLEL "Use MPI parallel build" ON)
@@ -16,20 +16,16 @@ option(ENABLE_GSL "Use GSL library" ON)
 <?end if?>
 
 # ========================================
-# Paths (equivalent to LIBMBOARD_DIR)
+# libmboard, set libmboard_DIR for non-standard install location
 # ========================================
 find_package(libmboard REQUIRED)
-#set(LIBMBOARD_DIR "/usr/local" CACHE PATH "Path to libmboard")
-
-#set(LIBMBOARD_INC ${LIBMBOARD_DIR}/include)
-#set(LIBMBOARD_LIB ${LIBMBOARD_DIR}/lib)
+#set(libmboard_DIR "/usr/local" CACHE PATH "Path to libmboard")
 
 # ========================================
 # Compiler selection
 # ========================================
 if(ENABLE_PARALLEL)
     find_package(MPI REQUIRED)
-#    set(CMAKE_C_COMPILER ${MPI_C_COMPILER})
 endif()
 
 # ========================================
@@ -37,15 +33,12 @@ endif()
 # ========================================
 add_compile_options(-std=c99)
 
-#include_directories(
-#    ${LIBMBOARD_INC}
-#)
-
 # Defines
 if(ENABLE_GSL)
     add_compile_definitions(GSL_LIB)
 endif()
 
+add_compile_definitions(_CMAKE_)
 if(ENABLE_DEBUG)
     add_compile_definitions(_DEBUG_MODE)
     add_compile_options(-Wall -g)
@@ -54,9 +47,9 @@ else()
 endif()
 
 # ========================================
-# FLAME core sources
+# Xparser core sources
 # ========================================
-set(FLAME
+set(XPARSER_GENERATED_SRCS
     main.c
     memory.c
     xml.c
@@ -68,9 +61,8 @@ set(FLAME
 
 # ========================================
 # Generated model sources (template injection)
-# Replace these with your generator output
 # ========================================
-set(SOURCES
+set(AGENT_SRCS
   <?foreach functionfiles?> $filepath <?end foreach?>
 )
 
@@ -78,8 +70,8 @@ set(SOURCES
 # Executable
 # ========================================
 add_executable(main
-    ${FLAME}
-    ${SOURCES}
+    ${XPARSER_GENERATED_SRCS}
+    ${AGENT_SRCS}
 )
 
 # ========================================
@@ -103,7 +95,6 @@ endif()
 # Final linking
 target_link_libraries(main
     ${MBOARD_LIB}
-    m
 )
 
 # MPI link if parallel
@@ -112,7 +103,7 @@ if(ENABLE_PARALLEL)
 endif()
 
 # ========================================
-# Extra targets (from Makefile)
+# Extra targets
 # ========================================
 
 add_custom_target(clean-all
@@ -126,4 +117,3 @@ add_custom_target(format
 add_custom_target(print
     COMMAND a2ps -R -f10 --column=1 ${SOURCES}
 )
-

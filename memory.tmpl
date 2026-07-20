@@ -5,6 +5,40 @@
 
 #include "header.h"
 
+<?foreach envvar?>
+/** \var $type $name
+* \brief A constant variable from the environment. */
+$type FLAME_environment_variable_$name;<?end foreach?>
+
+/** \var xmachine * temp_xmachine
+* \brief Pointer to xmachine to initialise linked list. */
+xmachine * temp_xmachine;
+<?foreach message?>
+/** \var m_$name * temp_$name_message
+* \brief Pointer to m_$name to initialise linked list. */
+m_$name * temp_$name_message;<?end foreach?>
+/** \var node_information * temp_node_info
+* \brief Pointer to node_information to initialise linked list. */
+node_information * temp_node_info;
+/** \var char outputpath[1000]
+* \brief Output path for files. */
+char outputpath[1000];
+/** \var long total_time
+* \brief Total time for the simulation run (in seconds) */
+double total_time;
+/** \var int total_messages
+* \brief Total messages sent between nodes for the simulation run */
+int total_messages;
+/** \var int totalnodes
+* \brief Number of nodes */
+int totalnodes;
+/** \var xmachine ** p_xmachine
+* \brief Pointer to first pointer of x-machine memory list */
+//xmachine ** p_xmachine;
+/** \var xmachine * current_xmachine
+* \brief Pointer to current x-machine memory that is being processed */
+xmachine * current_xmachine;
+
 <?foreach xagent?><?foreach function?>
 void unittest_$name_$current_state_$next_state()
 {
