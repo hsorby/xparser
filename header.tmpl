@@ -241,7 +241,7 @@ struct xmachine
 <?foreach message?>
 /** \var void* FLAME_m_$name_composite_params\n
  * \brief Pointer to message sync agent composite params */
-void* FLAME_m_$name_composite_params;
+extern void* FLAME_m_$name_composite_params;
 
 /** \struct m_$name
  * \brief Holds message of type $name_message.
@@ -338,7 +338,7 @@ extern m_$name * temp_$name_message;<?end foreach?>
 extern node_information * temp_node_info;
 /** \var char outputpath[1000]
 * \brief Output path for files. */
-char outputpath[1000];
+extern char outputpath[1000];
 /** \var long total_time
 * \brief Total time for the simulation run (in seconds) */
 extern double total_time;
@@ -355,13 +355,13 @@ extern int totalnodes;
 * \brief Pointer to current x-machine memory that is being processed */
 extern xmachine * current_xmachine;
 <?foreach xagent?>/* Pointer to current $agent_name agent */
-/*@dependent@*/ /*@null@*/ /*@out@*/ xmachine_memory_$name * current_xmachine_$name;
-/*@dependent@*/ xmachine_memory_$name_holder * temp_xmachine_$name_holder;
-/*@dependent@*/ /*@null@*/ /*@out@*/ xmachine_memory_$name_holder * current_xmachine_$name_holder;
-xmachine_memory_$name_state * current_xmachine_$name_next_state; /* New agents added to this state */
+/*@dependent@*/ /*@null@*/ /*@out@*/ extern xmachine_memory_$name * current_xmachine_$name;
+/*@dependent@*/ extern xmachine_memory_$name_holder * temp_xmachine_$name_holder;
+/*@dependent@*/ /*@null@*/ /*@out@*/ extern xmachine_memory_$name_holder * current_xmachine_$name_holder;
+extern xmachine_memory_$name_state * current_xmachine_$name_next_state; /* New agents added to this state */
 <?foreach state?>/* Pointer to list of $agent_name agents in state $name state */
 //xmachine_memory_$agent_name * temp_xmachine_$agent_name_$name;
-xmachine_memory_$agent_name_state * $agent_name_$name_state;
+extern xmachine_memory_$agent_name_state * $agent_name_$name_state;
 <?end foreach?><?end foreach?>
 <?foreach constant_filter_variable?>
 /** \var MBt_IndexMap FLAME_map_$agent_name_$name
@@ -369,36 +369,36 @@ xmachine_memory_$agent_name_state * $agent_name_$name_state;
 MBt_IndexMap FLAME_map_$agent_name_$name;
 <?end foreach?>
 <?foreach message?>
-MBt_Board b_$name;
-MBt_Iterator i_$name;
+extern MBt_Board b_$name;
+extern MBt_Iterator i_$name;
 <?end foreach?>
 <?foreach message?>
 /** \var m_$name * $name_message
 * \brief Pointer to message struct for looping through $name message list */
-m_$name * $name_message;<?end foreach?>
+extern m_$name * $name_message;<?end foreach?>
 /** \var FLAME_output ** FLAME_outputs
 * \brief Pointer to list of outputs */
-FLAME_output * FLAME_outputs;
+extern FLAME_output * FLAME_outputs;
 /** \var node_information * p_node_info
 * \brief Pointer to first pointer of node list */
-node_information ** p_node_info;
+extern node_information ** p_node_info;
 /** \var node_information * current_node
 * \brief Pointer to current node */
-node_information * current_node;
+extern node_information * current_node;
 
 <?if serial?>
 /** \var int node_number\n
  *  \brief Node number (not needed for serial codes) */
-int node_number;
+extern int node_number;
 <?end if?>
 
 <?if parallel?>
 /** \var MPI_Status status
 * \brief MPI status */
-MPI_Status status;
+extern MPI_Status status;
 /** \var MPI_Datatype spacePartitionType
 * \brief MPI space partition type */
-MPI_Datatype spacePartitionType;
+extern MPI_Datatype spacePartitionType;
 <?foreach xagent?>
 /** \var MPI_Datatype xmachine$nameType
 * \brief MPI ", $name xmachine */
@@ -411,17 +411,17 @@ MPI_Datatype spacePartitionType;
 <?end foreach?>
 /** \var int node_number\n
  * \brief Node number (identifier for node) */
-int node_number;
+extern int node_number;
 <?end if?>
 /** \var int iteration_loop
 * \brief The current iteration number */
-int iteration_loop;
+extern int iteration_loop;
 /** \var int output_frequency
 * \brief Frequency to output results */
-int output_frequency;
+extern int output_frequency;
 /** \var int output_offset
 * \brief Offset to output results */
-int output_offset;
+extern int output_offset;
 
 /** \def SPINF
 * \brief Dummy inf value for space partition data. */
